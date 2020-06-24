@@ -20,12 +20,6 @@ jobs:
       with:
         java-version: 1.8
     
-    - name: Android NDK toolchain Setup
-      uses: ravinderjangra/android-ndk-toolchain-setup@0.2
-      with:
-        api: 21
-        arch: arm
-    
     - name: Run Prebuild Script
       run: bash ./AndroidTacticalAssaultKit-CIV/scripts/prebuild.sh
     
