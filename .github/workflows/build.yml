@@ -50,7 +50,7 @@ jobs:
       if: steps.cache-ndk.outputs.cache-hit != 'true'
       uses: ravinderjangra/android-ndk-toolchain-setup@0.2
       with:
-        api: '21'
+        api: '12b'
         arch: 'arm'
         install-location: '/home/runner/toolchains'
         force: true
