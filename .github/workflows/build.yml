@@ -15,36 +15,55 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       
-    - name: Cache JDK, SDK, NDK & Prebuild
-      id: cache-prebuild
+    - name: Cache JDK
+      id: cache-jdk
       uses: actions/cache@v2
       with:
-        path: |
-          /home/runner/android-sdk
-          /home/runner/toolchains
-          /home/runner/work/AndroidTacticalAssaultKit-CIV/AndroidTacticalAssaultKit-CIV/takthirdparty/builds
-          /home/runner/work/AndroidTacticalAssaultKit-CIV/AndroidTacticalAssaultKit-CIV/takthirdparty/stlsoft
-        key:   ${{ runner.os }}-prebuild
+        path: /home/runner/android-sdk
+        key: ${{ runner.os }}-jdk
         
     - name: Set up JDK 1.8
-      if: steps.cache-prebuild.outputs.cache-hit != 'true'
+      if: steps.cache-jdk.outputs.cache-hit != 'true'
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
       
+    - name: Cache Android SDK
+      id: cache-sdk
+      uses: actions/cache@v2
+      with:
+        path: /home/runner/android-sdk
+        key: ${{ runner.os }}-sdk
+    
     - name: Install Android SDK
-      if: steps.cache-prebuild.outputs.cache-hit != 'true'
+      if: steps.cache-sdk.outputs.cache-hit != 'true'
       uses: malinskiy/action-android/install-sdk@release/0.0.3
+    
+    - name: Cache Android NDK
+      id: cache-ndk
+      uses: actions/cache@v2
+      with:
+        path: /home/runner/toolchains
+        key: ${{ runner.os }}-ndk
       
     - name: Install Android NDK
-      if: steps.cache-prebuild.outputs.cache-hit != 'true'
+      if: steps.cache-ndk.outputs.cache-hit != 'true'
       uses: ravinderjangra/android-ndk-toolchain-setup@0.2
       with:
         api: '21'
         arch: 'arm'
         install-location: '/home/runner/toolchains'
         force: true
-        
+    
+    - name: Cache Prebuild
+      id: cache-prebuild
+      uses: actions/cache@v2
+      with:
+        path: |
+          /home/runner/work/AndroidTacticalAssaultKit-CIV/AndroidTacticalAssaultKit-CIV/takthirdparty/build
+          /home/runner/work/AndroidTacticalAssaultKit-CIV/AndroidTacticalAssaultKit-CIV/takengine/thirdparty
+        key: ${{ runner.os }}-prebuild
+    
     - name: Run Prebuild Script
       if: steps.cache-prebuild.outputs.cache-hit != 'true'
       run: cd scripts && ./prebuild.sh
