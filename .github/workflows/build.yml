@@ -14,23 +14,43 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      
+    - name: Cache JDK, SDK, NDK & Prebuild
+      id: cache-prebuild
+      uses: actions/cache@v2
+      with:
+        path: |
+          /home/runner/android-sdk
+          /home/runner/toolchains
+          /home/runner/work/AndroidTacticalAssaultKit-CIV/AndroidTacticalAssaultKit-CIV/takthirdparty/builds
+          /home/runner/work/AndroidTacticalAssaultKit-CIV/AndroidTacticalAssaultKit-CIV/takthirdparty/stlsoft
+        key:   ${{ runner.os }}-prebuild
+        
     - name: Set up JDK 1.8
+      if: steps.cache-prebuild.outputs.cache-hit != 'true'
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+      
     - name: Install Android SDK
+      if: steps.cache-prebuild.outputs.cache-hit != 'true'
       uses: malinskiy/action-android/install-sdk@release/0.0.3
+      
     - name: Install Android NDK
+      if: steps.cache-prebuild.outputs.cache-hit != 'true'
       uses: ravinderjangra/android-ndk-toolchain-setup@0.2
       with:
         api: '21'
         arch: 'arm'
         install-location: '/home/runner/toolchains'
         force: true
+        
     - name: Run Prebuild Script
+      if: steps.cache-prebuild.outputs.cache-hit != 'true'
       run: cd scripts && ./prebuild.sh
       env:
         ANDROID_NDK: /usr/local/lib/android/sdk/ndk-bundle/
+        
     - name: Run Build Script
       run: cd scripts && ./build.sh
       env:
