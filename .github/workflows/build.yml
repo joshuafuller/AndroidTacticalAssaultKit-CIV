@@ -30,7 +30,6 @@ jobs:
     - name: Run Prebuild Script
       run: ANDROID_NDK=/home/runner/toolchains cd scripts && ./prebuild.sh
       env:
-        ANDROID_NDK: /home/runner/toolchains
-    
+        ANDROID_NDK: /usr/local/lib/android/sdk/ndk-bundle/
     - name: Build with Gradle
       run: ./atak/gradlew assembleCivRelease
