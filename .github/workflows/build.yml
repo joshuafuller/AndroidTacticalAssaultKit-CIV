@@ -28,8 +28,13 @@ jobs:
         install-location: '/home/runner/toolchains'
         force: true
     - name: Run Prebuild Script
-      run: ANDROID_NDK=/home/runner/toolchains cd scripts && ./prebuild.sh
+      run: cd scripts && ./prebuild.sh
       env:
         ANDROID_NDK: /usr/local/lib/android/sdk/ndk-bundle/
-    - name: Build with Gradle
-      run: ./atak/gradlew assembleCivRelease
+    - name: Run Build Script
+      run: cd scripts && ./build.sh
+      env:
+        TAK_KEY_FILE_PATH: tbd
+        TAK_KEY_FILE_PASSWD: tbd
+        TAK_KEY_ALIAS: tbd
+        TAK_KEY_PASSWD: tbd
