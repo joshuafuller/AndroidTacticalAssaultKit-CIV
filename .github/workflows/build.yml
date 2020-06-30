@@ -72,7 +72,7 @@ jobs:
     - name: Run Build Script
       run: |
         cd scripts && 
-        echo "ndk.dir=/usr/local/lib/android/sdk/ndk-bundle" > /home/runner/work/AndroidTacticalAssaultKit-CIV/AndroidTacticalAssaultKit-CIV/tree/master/atak/ATAKMapEngine/lib/local.properties
+        echo "ndk.dir=/usr/local/lib/android/sdk/ndk-bundle" > /home/runner/work/AndroidTacticalAssaultKit-CIV/AndroidTacticalAssaultKit-CIV/atak/ATAKMapEngine/lib/local.properties
         ./build.sh
       env:
         NDK_HOME: /usr/local/lib/android/sdk/ndk-bundle
