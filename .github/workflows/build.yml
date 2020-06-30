@@ -67,10 +67,13 @@ jobs:
       if: steps.cache-prebuild.outputs.cache-hit != 'true'
       run: cd scripts && ./prebuild.sh
       env:
-        ANDROID_NDK: /usr/local/lib/android/sdk/ndk-bundle/toolchains
+        ANDROID_NDK: /usr/local/lib/android/sdk/ndk-bundle
         
     - name: Run Build Script
-      run: cd scripts && ./build.sh
+      run: |
+        cd scripts && 
+        echo "ndk.dir=/usr/local/lib/android/sdk/ndk-bundle" > /home/runner/work/AndroidTacticalAssaultKit-CIV/AndroidTacticalAssaultKit-CIV/tree/master/atak/ATAKMapEngine/lib/local.properties
+        ./build.sh
       env:
         NDK_HOME: /usr/local/lib/android/sdk/ndk-bundle
         NDK_MODULE_PATH: /usr/local/lib/android/sdk/ndk-bundle
