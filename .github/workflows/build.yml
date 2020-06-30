@@ -72,7 +72,10 @@ jobs:
     - name: Run Build Script
       run: cd scripts && ./build.sh
       env:
-        ANDROID_NDK: /usr/local/lib/android/sdk/ndk-bundle/toolchains
+        NDK_HOME: /usr/local/lib/android/sdk/ndk-bundle
+        NDK_MODULE_PATH: /usr/local/lib/android/sdk/ndk-bundle
+        ANDROID_NDK: /usr/local/lib/android/sdk/ndk-bundle
+        ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk-bundle
         TAK_KEY_FILE_PATH: tbd
         TAK_KEY_FILE_PASSWD: tbd
         TAK_KEY_ALIAS: tbd
