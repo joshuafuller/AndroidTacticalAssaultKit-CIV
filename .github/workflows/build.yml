@@ -51,8 +51,8 @@ jobs:
       run: |
         mkdir /home/runner/ndk && 
         curl -O https://dl.google.com/android/repository/android-ndk-r12b-linux-x86_64.zip && 
-        unzip android-ndk-r12b-linux-x86_64.zip -d ./ &&
-        mv ./android-ndk-r12b /usr/local/lib/android/sdk/ndk-bundle
+        unzip -q android-ndk-r12b-linux-x86_64.zip -d ./ &&
+        sudo mv ./android-ndk-r12b /usr/local/lib/android/sdk/ndk-bundle
         
     - name: Cache Prebuild
       id: cache-prebuild
