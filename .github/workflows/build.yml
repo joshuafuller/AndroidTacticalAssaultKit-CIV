@@ -48,8 +48,12 @@ jobs:
       
     - name: Install Android NDK
       if: steps.cache-ndk.outputs.cache-hit != 'true'
-      run: echo "y" | sudo /usr/local/lib/android/sdk/tools/bin/sdkmanager --install "ndk;12.1.2977051" --sdk_root=${ANDROID_SDK_ROOT}
-    
+      run: |
+        mkdir /home/runner/ndk && 
+        curl -O https://dl.google.com/android/repository/android-ndk-r12b-linux-x86_64.zip && 
+        unzip android-ndk-r12b-linux-x86_64.zip -d ./ &&
+        mv ./android-ndk-r12b /usr/local/lib/android/sdk/ndk-bundle
+        
     - name: Cache Prebuild
       id: cache-prebuild
       uses: actions/cache@v2
