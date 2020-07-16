@@ -4,9 +4,9 @@
 name: Build ATAK Release
 on:
   push:
-    branches: [ master ]
+    branches: [ continuous-integration]
   pull_request:
-    branches: [ master ]
+    branches: [ continuous-integration ]
 
 jobs:
   build:
