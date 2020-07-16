@@ -1,0 +1,85 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Build ATAK Release
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Cache JDK
+      id: cache-jdk
+      uses: actions/cache@v2
+      with:
+        path: /home/runner/android-sdk
+        key: ${{ runner.os }}-jdk
+        
+    - name: Set up JDK 1.8
+      if: steps.cache-jdk.outputs.cache-hit != 'true'
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+      
+    - name: Cache Android SDK
+      id: cache-sdk
+      uses: actions/cache@v2
+      with:
+        path: /home/runner/android-sdk
+        key: ${{ runner.os }}-sdk
+    
+    - name: Install Android SDK
+      if: steps.cache-sdk.outputs.cache-hit != 'true'
+      uses: malinskiy/action-android/install-sdk@release/0.0.3
+    
+    - name: Cache Android NDK
+      id: cache-ndk
+      uses: actions/cache@v2
+      with:
+        path: /home/runner/toolchains
+        key: ${{ runner.os }}-ndk
+      
+    - name: Install Android NDK
+      if: steps.cache-ndk.outputs.cache-hit != 'true'
+      run: |
+        mkdir /home/runner/ndk && 
+        curl -O https://dl.google.com/android/repository/android-ndk-r12b-linux-x86_64.zip && 
+        unzip -q android-ndk-r12b-linux-x86_64.zip -d ./ &&
+        sudo mv ./android-ndk-r12b /usr/local/lib/android/sdk/ndk-bundle
+        
+    - name: Cache Prebuild
+      id: cache-prebuild
+      uses: actions/cache@v2
+      with:
+        path: |
+          /home/runner/work/AndroidTacticalAssaultKit-CIV/AndroidTacticalAssaultKit-CIV/takthirdparty/build
+          /home/runner/work/AndroidTacticalAssaultKit-CIV/AndroidTacticalAssaultKit-CIV/takengine/thirdparty
+        key: ${{ runner.os }}-prebuild
+    
+    - name: Run Prebuild Script
+      if: steps.cache-prebuild.outputs.cache-hit != 'true'
+      run: cd scripts && ./prebuild.sh
+      env:
+        ANDROID_NDK: /usr/local/lib/android/sdk/ndk-bundle
+        
+    - name: Run Build Script
+      run: |
+        cd scripts && 
+        echo "ndk.dir=/usr/local/lib/android/sdk/ndk-bundle" > /home/runner/work/AndroidTacticalAssaultKit-CIV/AndroidTacticalAssaultKit-CIV/atak/ATAKMapEngine/lib/local.properties
+        ./build.sh
+      env:
+        NDK_HOME: /usr/local/lib/android/sdk/ndk-bundle
+        NDK_MODULE_PATH: /usr/local/lib/android/sdk/ndk-bundle
+        ANDROID_NDK: /usr/local/lib/android/sdk/ndk-bundle
+        ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk-bundle
+        TAK_KEY_FILE_PATH: tbd
+        TAK_KEY_FILE_PASSWD: tbd
+        TAK_KEY_ALIAS: tbd
+        TAK_KEY_PASSWD: tbd
